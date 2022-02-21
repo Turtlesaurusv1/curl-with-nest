@@ -32,7 +32,13 @@ import {
     }
   
     @Get(':id') 
-    async findAlbum(@Param('id') id: number): Promise<Album> {
+    async findAlbum(@Param('id') id: number): Promise<any> {
+
+      const album = await this.albumService.findOne(id);
+      if(!album){
+        return {massage:'there is no album with that id'};
+      }
+
       return await this.albumService.findOne(id);
     }
   
@@ -40,17 +46,31 @@ import {
     async updateAlbum(
       @Param('id') id: number,
       @Body() createAlbumDto: CreateAlbumDto,
-    ): Promise<Album> {
+    ): Promise<any> {
       const album = await this.albumService.findOne(id);
-      album.title = createAlbumDto.title;
-      album.remark = createAlbumDto.remark;
-      return await this.albumService.createOrUpdate(album);
+
+      if(!album){
+        return {massage:'there is no album with that id'};
+      }
+
+        album.title = createAlbumDto.title;
+        album.remark = createAlbumDto.remark;
+        return await this.albumService.createOrUpdate(album);
     }
   
     @Delete(':id')  
     async deleteAlbum(@Param('id') id: number): Promise<any> {
-      await this.albumService.delete(id);
-      console.log(id)
-      return { success: true };
+      const album = await this.albumService.findOne(id);
+
+      if(album){
+        await this.albumService.delete(id);
+        return { success: true , massage:'this album has been deleted'};
+      }else {
+        return {massage:'there is no album with that id'};
+      }
+
+      
+
+      
     }
   }
