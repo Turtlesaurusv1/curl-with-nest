@@ -22,6 +22,10 @@ export class AlbumService {
     return await this.albumRepository.find();
   }
 
+  async queryBuilder(alias: string) {
+    return this.albumRepository.createQueryBuilder(alias);
+}
+
   async delete(id: number): Promise<DeleteResult> {
     return await this.albumRepository.delete({ id: id });
   }
