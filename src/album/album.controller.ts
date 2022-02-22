@@ -37,7 +37,7 @@ import {
     @Get('search')
     async searchalbum(@Req() req:Request){
 
-      const album = await this.albumService.queryBuilder('album');
+     const album = await this.albumService.queryBuilder('album');
        
      if(req.query.s){
       album.where("album.title LIKE :s OR album.remark LIKE :s", {s: `%${req.query.s}%`})
@@ -48,15 +48,10 @@ import {
      if(sort){
       album.orderBy('album.title');
     }
-
       const page: number = parseInt(req.query.page as any) || 1;
       const perPage = 2;
       const total = await album.getCount();
-
       album.offset((page - 1) * perPage).limit(perPage);
-
-
-
       return {
           data: await album.getMany(),
           total,
